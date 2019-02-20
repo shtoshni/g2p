@@ -1,7 +1,7 @@
 """Seq2Seq model class that creates the computation graph.
 
-Author: Trang Tran and Shubham Toshniwal
-Contact: ttmt001@uw.edu, shtoshni@ttic.edu
+Author: Shubham Toshniwal
+Contact: shtoshni@ttic.edu
 Date: April, 2017
 """
 
@@ -18,7 +18,7 @@ from tensorflow.python.framework import ops
 import data_utils
 from encoder import Encoder
 from simple_decoder import SimpleDecoder
-
+from attn_decoder import AttnDecoder
 
 class Seq2SeqModel(object):
     """Implements the Encoder-Decoder model."""
@@ -59,10 +59,10 @@ class Seq2SeqModel(object):
                                              name='encoder')
         _batch_size = self.encoder_inputs.get_shape()[1].value
         # Input sequence length placeholder
-        self.seq_len = tf.placeholder(tf.int64, shape=[_batch_size],
+        self.seq_len = tf.placeholder(tf.int32, shape=[_batch_size],
                                       name="seq_len")
         # Output sequence length placeholder
-        self.seq_len_target = tf.placeholder(tf.int64, shape=[_batch_size],
+        self.seq_len_target = tf.placeholder(tf.int32, shape=[_batch_size],
                                              name="seq_len_target")
 
         # Input to decoder RNN. This input has an initial extra symbol - GO -
@@ -74,8 +74,10 @@ class Seq2SeqModel(object):
 
         # Initialize the encoder and decoder RNNs
         self.encoder = Encoder(isTraining, **encoder_attribs)
-        self.decoder = SimpleDecoder(isTraining, **decoder_attribs)
-
+        if decoder_attribs['simp_decoder']:
+            self.decoder = SimpleDecoder(isTraining, **decoder_attribs)
+        else:
+            self.decoder = AttnDecoder(isTraining, **decoder_attribs)
         # First encode input
         self.encoder_hidden_states, self.final_state = \
             self.encoder.encode_input(self.encoder_inputs, self.seq_len)
