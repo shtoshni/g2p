@@ -123,7 +123,7 @@ def batch_bucketed_data(bucketed_data, batch_size=64, shuffle=True):
             # Shuffle data in each bucket
             random.shuffle(cur_bucket_data)
         batched_data += [cur_bucket_data[i:i + batch_size]
-                         for i in xrange(0, len(cur_bucket_data), batch_size)]
+                         for i in range(0, len(cur_bucket_data), batch_size)]
     if shuffle:
         # Shuffle the created batches
         random.shuffle(batched_data)

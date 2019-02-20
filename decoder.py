@@ -18,6 +18,7 @@ from tensorflow.contrib.rnn import core_rnn_cell as rnn_cell
 from tensorflow.python.ops import variable_scope
 
 
+
 class Decoder(object):
     """Base class for decoder in encoder-decoder framework."""
 

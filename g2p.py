@@ -53,10 +53,10 @@ def parse_options():
 
     # Common Encoder and Decoder parameters
     parser.add_argument("-esize", "--embedding_size",
-                        default=30, type=int,
+                        default=256, type=int,
                         help="Input Embedding Size")
     parser.add_argument("-hsize", "--hidden_size",
-                        default=256, type=int,
+                        default=512, type=int,
                         help="Hidden layer size")
     parser.add_argument("-num_layers", "--num_layers",
                         default=3, type=int,
@@ -67,13 +67,16 @@ def parse_options():
 
     # Separate encoder parameters
     parser.add_argument("-bi", "--bi_dir",
-                        default=False, action='store_true',
+                        default=True, action='store_true',
                         help="Whether the encoder is bi-directional or not")
 
     # Separate decoder parameters
     parser.add_argument("-samp_prob", "--sampling_probability",
-                        default=0.0, type=float,
+                        default=0.1, type=float,
                         help="Scheduled sampling probability")
+    parser.add_argument("-simp_decoder", default=False,
+                        action="store_true",
+                        help="Use simple decoder instead of attention decoder.")
 
     # Data parameters
     parser.add_argument("-data_dir", "--data_dir",
@@ -164,6 +167,7 @@ def parse_options():
     decoder_attribs = deepcopy(common_attribs)
     decoder_attribs['samp_prob'] = arg_dict['sampling_probability']
     decoder_attribs['num_decoder_symbols'] = arg_dict['target_vocab_size']
+    decoder_attribs['simp_decoder'] = arg_dict['simp_decoder']
     arg_dict['decoder_attribs'] = decoder_attribs
 
     if not arg_dict['eval']:
